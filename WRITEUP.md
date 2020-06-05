@@ -3,22 +3,27 @@
 
 ## Explaining Custom Layers
 
-The process behind converting custom layers involves... Some of the potential reasons for handling custom layers are...
 Openvino's MO will recognise the most commonly used NN layers. And for most of them there are readily available optimizations and internal representations (in other words, they can be automatically converted): these layers which have those are called supported layers. Other layers which do not have readily available optimization and/or internal reprsentation are called custom layers. The user must tell openvino what to do with these. One of the ways how to deal with custom layers is to offload everything to the original framework and run it there and then load it back into openvino. The other way is to register the custom layer as an extension to the MO.
 
 ## Comparing Model Performance
 
-There is an additional helper file that I have used to run the original model with TF and opencv2 (before the conversion to the IR for openvino): main_cv.py
+There is an additional helper file that I have used to run the original model with TF and opencv2 (before the conversion to the IR for openvino): `main_cv.py`
+
 This helper file I have modelled with the help of the following example on how to use TF and opencv2 together for object detection: https://github.com/opencv/opencv/wiki/TensorFlow-Object-Detection-API
+
 I have used it only to get the performance information of the original TF model before conversion with MO. This is how it is called:
+```
 python main_cv.py -i resources/Pedestrian_Detect_2_1_1.mp4 -m ssdlite_mobilenet_v2_coco_2018_05_09/
+```
 (default -pt is set as 0.5 unless other number has been provided; the frozen_inference_model.pb is assumed to be in the path provided with -m)
 
 For the main.py file I have used parts of my code that I did for the last exercise of the Intel Edge AI Scholarship Foundation course that I had finished in February 2020 prior to taking this course (it is my own work after all).
-I have compared main_cv.py results with the output of the following command for the converted IR:
-python main.py -i resources/Pedestrian_Detect_2_1_1.mp4 -m ssdlite_mobilenet_v2_coco_2018_05_09/frozen_inference_graph.xml -l /opt/intel/openvino/deployment_tools/inference_engine/lib/intel64/libcpu_extension_sse4.so -d CPU -pt 0.5
 
-I have merged the video outputs of both scripts into one video using ffmpeg: output_combined.mp4 .
+I have compared `main_cv.py` results with the output of the following command for the converted IR:
+```
+python main.py -i resources/Pedestrian_Detect_2_1_1.mp4 -m ssdlite_mobilenet_v2_coco_2018_05_09/frozen_inference_graph.xml -l /opt/intel/openvino/deployment_tools/inference_engine/lib/intel64/libcpu_extension_sse4.so -d CPU -pt 0.5
+```
+I have merged the video outputs of both scripts into one video using ffmpeg: `output_combined.mp4` .
 On the left, it is the original model's output, while on the right you can see the converted model's output.
 
 
